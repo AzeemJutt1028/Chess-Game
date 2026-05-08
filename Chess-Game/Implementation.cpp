@@ -387,9 +387,50 @@ bool Knight::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 }
 //Overriden Function to check if moev is validate
 bool Bishop::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
+	bool checker = true;
+	if (board.board[row1][col1]->getColor() == color) {
+		if (abs(row2 - row1) == abs(col2 - col1)) {
+			if(board.board[row2][col2] != nullptr) {
+				if (board.board[row1][col1]->getColor() == board.board[row2][col2]->getColor()) {
+					checker = false;	//Illegal Move
+					return checker;
+				}
+				else {
+					checker = true;
+				}
+			}
+			else {
+				checker = true;
+			}
+			//check path obstacle
+			int rowDirection = (row2 - row1) / abs(row2 - row1);    //-1 or +1
+			int colDirection = (col2 - col1) / abs(col2 - col1);    //-1 or +1
+			for (int i = row1 + rowDirection; i != row2 && checker == true; i += rowDirection) {
+				for (int j = col1 + colDirection; j != col2 && checker == true; j += colDirection) {
+					if (abs(i - row1) == abs(j - col1)) {
+						if (board.board[i][j] != nullptr) {
+							checker = false;	//Illegal Move
+							break;
+						}
+						else {
+							checker = true;
+						}
+					}
+				}
+			}
+		}
+		else {
+			checker = false;	//Illegal Move
+
+		}
+	}
+	else {
+		checker = false;	//Illegal Move
+	}
 	///////////////////////////////////
-	return 1;
+	return checker;
 }
+
 //Overriden Function to check if moev is validate
 bool Queen::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
 	///////////////////////////////////
