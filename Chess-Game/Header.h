@@ -6,6 +6,12 @@
 #define RESET   "\033[0m"
 using namespace std;
 
+//static variable to excess king of both sides//
+static int greenKingRow = 0;
+static int greenKingCol = 4;
+static int redKingRow = 7;
+static int redKingCol = 4;
+
 class Board;		//Forwar Declaration
 //Structur For Position
 struct Pos {
@@ -42,6 +48,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
+	friend bool check(Board& board, bool color);
 };
 
 //Class - Rook
@@ -55,6 +62,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
+	friend bool check(Board& board, bool color);
 };
 
 //Class - Knight
@@ -68,6 +76,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
+	friend bool check(Board& board, bool color);
 };
 
 //Class - Bishop
@@ -81,6 +90,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
+	friend bool check(Board& board, bool color);
 };
 
 //Class - Queen
@@ -94,6 +104,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
+	friend bool check(Board& board, bool color);
 };
 
 //Class - King
@@ -107,6 +118,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
+	friend bool check(Board& board, bool color);
 };
 
 //Class - Board 

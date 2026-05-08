@@ -1,5 +1,37 @@
 #include "Header.h"
 
+///////Friend Function to check if move is valid ////////
+bool check(Board& board, bool color) {
+	if (color) {			//Cheking Check on Green King
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (board.board[i][j] != nullptr) {
+					if (board.board[i][j]->getColor() != color) {
+						if (board.board[i][j]->isValid(j, i, greenKingCol, greenKingRow, board, !color)) {
+							cout << "\n\n\t\t\t\t===Check on Green King===\n";
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	else {					//Cheking Check on Red King
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (board.board[i][j] != nullptr) {
+					if (board.board[i][j]->getColor() != color) {
+						if (board.board[i][j]->isValid(j, i, redKingCol, redKingRow, board, !color)) {
+							cout << "\n\n\t\t\t\t===Check on Red King===\n";
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
 //Class - Piece
 Piece::Piece() {};
 Piece::Piece(char sym, bool white) :symb(sym), isWhite(white) {
@@ -351,6 +383,16 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 	else {
 		checker = false;	//Illegal Move
 	}
+	if (checker) {
+		bool test;
+		if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
+			test = check(board, color);
+
+		}
+		else {			//Red Moved    checking if check on green king
+			test = check(board, color);
+		}
+	}
 	return checker;
 }
 //Overriden Function to check if moev is validate
@@ -383,6 +425,15 @@ bool Knight::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 		checker = false;	//Illegal Move
 	}
 	///////////////////////////////////
+	if (checker) {
+		bool test;
+		if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
+			test = check(board, color);
+		}
+		else {			//Red Moved    checking if check on green king
+			test = check(board, color);
+		}
+	}
 	return checker;
 }
 //Overriden Function to check if moev is validate
@@ -428,6 +479,15 @@ bool Bishop::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 		checker = false;	//Illegal Move
 	}
 	///////////////////////////////////
+	if(checker) {
+		bool test;
+		if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
+			test = check(board, color);
+		}
+		else {			//Red Moved    checking if check on green king
+			test = check(board, color);
+		}
+	}
 	return checker;
 }
 
@@ -460,6 +520,20 @@ bool King::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 	else {
 		checker = false;	//Illegal Move
 	}
+
+	//king position update//
+	if(checker) {
+		if (board.board[row1][col1]->getColor()) {		//Green King
+			greenKingRow = row2;
+			greenKingCol = col2;
+		}
+		else {			//Red King
+			redKingRow = row2;
+			redKingCol = col2;
+		}
+	}
+
+
 	///////////////////////////////////
 	return checker;
 }
@@ -558,3 +632,4 @@ bool Game::checkGameOver() {
 	else
 		return 1;
 }
+
