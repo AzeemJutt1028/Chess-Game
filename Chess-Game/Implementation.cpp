@@ -196,105 +196,162 @@ bool Piece::isValid(int col1, int row1, int col2, int row2, Board& board, bool c
 }
 bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
 	bool checker = true;
+
+
 	if (board.board[row1][col1] != nullptr) {
 		if (board.board[row1][col1]->getColor() == color) {
-			if (row1 == 1 || row1 == 6) {
-				if (((row2 <= row1 + 2) && (row2 > row1)) || ((row2 >= row1 - 2) && (row2 < row1))) {
-					if (col1 == col2) {
-						if ((row2 == row1 + 1) && (board.board[row1 + 1][col1] == nullptr) || ((row2 == row1 - 1) && (board.board[row1 - 1][col1] != nullptr))) {
-							checker = true;
-						}
-						else {
-							if ((board.board[row1 + 1][col1] == nullptr) && (board.board[row1 + 2][col1] == nullptr) || ((board.board[row1 - 1][col1] == nullptr) && (board.board[row1 - 2][col1] == nullptr))) {
-								checker = true;
-							}
-						}
-					}
-					else if ((row2 == row1 + 1 && col2 == col1 + 1) || (row2 == row1 - 1 && col2 == col1 + 1)) {
-						if ((board.board[row1 + 1][col1 + 1] != nullptr) || (board.board[row1 - 1][col1 + 1] != nullptr)) {
-							if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 + 1]->getColor()) || (board.board[row1][col1]->getColor() != board.board[row1 - 1][col1 + 1]->getColor())) {
-								checker = true;
-							}
-							else {
-								checker = false;	//Illegal Move
-							}
-						}
-						else {
-							checker = false;	//Illegal Move
-						}
-					}
-					else if ((row2 == row1 + 1 && col2 == col1 - 1) || (row2 == row1 - 1 && col2 == col1 - 1)) {
-						if ((board.board[row1 + 1][col1 - 1] != nullptr) || (board.board[row1 - 1][col1 - 1] != nullptr)) {
-							if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 - 1]->getColor()) || (board.board[row1][col1]->getColor() != board.board[row1 - 1][col1 - 1]->getColor())) {
-								checker = true;
-							}
-							else {
-								checker = false;	//Illegal Move
-							}
-						}
-						else {
-							checker = false;	//Illegal Move
-						}
-					}
-					else {
-						checker = false;	//Illegal Move
-					}
-				}
-				else {
-					checker = false;	//Illegal Move
-				}
-			}
-			else {
-				if ((row1 + 1 == row2) || (row1 - 1 == row2)) {
-					if (col1 == col2) {
-						if ((board.board[row1 + 1][col1] == nullptr) || (board.board[row1 - 1][col1] == nullptr)) {
-							checker = true;
-						}
-						else {
-							checker = false;	//Illegal Move
-						}
-					}
-					else if ((row2 == row1 + 1 && col2 == col1 + 1) || (row2 == row1 - 1 && col2 == col1 + 1)) {
-						if ((board.board[row1 + 1][col1 + 1] != nullptr) || (board.board[row1 - 1][col1 + 1] != nullptr)) {
-							if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 + 1]->getColor()) || (board.board[row1][col1]->getColor() != board.board[row1 - 1][col1 + 1]->getColor())) {
-								checker = true;
-							}
-							else {
-								checker = false;	//Illegal Move
-							}
-						}
-						else {
-							checker = false;	//Illegal Move
-						}
-					}
-					else if ((row2 == row1 + 1 && col2 == col1 - 1) || (row2 == row1 - 1 && col2 == col1 - 1)) {
-						if ((board.board[row1 + 1][col1 - 1] != nullptr) || (board.board[row1 - 1][col1 - 1] != nullptr)) {
-							if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 - 1]->getColor()) || (board.board[row1][col1]->getColor() != board.board[row1 - 1][col1 - 1]->getColor())) {
-								checker = true;
-							}
-							else {
-								checker = false;	//Illegal Move
-							}
-						}
-						else {
-							checker = false;	//Illegal Move
-						}
-					}
-					else {
-						checker = false;	//Illegal Move
-					}
-				}
-				else {
-					checker = false;	//Illegal Move
-				}
-			}
+			if (board.board[row1][col1]->getColor()) {		//For Green Player
 
+				if (row1 == 1) {
+					if ((row2 <= row1 + 2) && (row2 > row1)) {
+						if (col1 == col2) {
+							if ((row2 == row1 + 1) && (board.board[row1 + 1][col1] == nullptr)) {
+								checker = true;
+							}
+							else {
+								if ((board.board[row1 + 1][col1] == nullptr) && (board.board[row1 + 2][col1] == nullptr)) {
+									checker = true;
+								}
+							}
+						}
+						else if ((row2 == row1 + 1 && col2 == col1 + 1)) {
+							if ((board.board[row1 + 1][col1 + 1] != nullptr)) {
+								if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 + 1]->getColor())) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
+							}
+							else {
+								checker = false;	//Illegal Move
+							}
+						}
+						else if ((row2 == row1 + 1 && col2 == col1 - 1)) {
+							if ((board.board[row1 + 1][col1 - 1] != nullptr)) {
+								if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 - 1]->getColor())) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
+							}
+							else {
+								checker = false;	//Illegal Move
+							}
+						}
+						else {
+							checker = false;	//Illegal Move
+						}
+					}
+					else {
+						checker = false;	//Illegal Move
+					}
+				}
+				else {
+					if (row1 + 1 == row2) {
+						if (col1 == col2) {
+							if ((board.board[row1 + 1][col1] == nullptr)) {
+								checker = true;
+							}
+							else {
+								checker = false;	//Illegal Move
+							}
+						}
+						else if ((row2 == row1 + 1 && col2 == col1 + 1)) {
+							if ((board.board[row1 + 1][col1 + 1] != nullptr)) {
+								if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 + 1]->getColor())) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
+							}
+							else {
+								checker = false;	//Illegal Move
+							}
+						}
+						else if ((row2 == row1 + 1 && col2 == col1 - 1)) {
+							if ((board.board[row1 + 1][col1 - 1] != nullptr)) {
+								if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 - 1]->getColor())) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
+							}
+							else {
+								checker = false;	//Illegal Move
+							}
+						}
+						else {
+							checker = false;	//Illegal Move
+						}
+					}
+					else {
+						checker = false;	//Illegal Move
+					}
+				}
+
+			}
+			else {			//For Red Player
+				if (row1 == 6) {
+					if ((row2 >= row1 - 2) && (row2 < row1)) {
+						if (col1 == col2) {
+							if ((row2 == row1 - 1) && (board.board[row1 - 1][col1] == nullptr)) {
+								checker = true;
+							}
+							else {
+								if ((board.board[row1 - 1][col1] == nullptr) && (board.board[row1 - 2][col1] == nullptr)) {
+									checker = true;
+								}
+							}
+						}
+						else if ((row2 == row1 - 1 && col2 == col1 + 1)) {
+							if ((board.board[row1 - 1][col1 + 1] != nullptr)) {
+								if ((board.board[row1][col1]->getColor() != board.board[row1 - 1][col1 + 1]->getColor())) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
+							}
+							else {
+								checker = false;	//Illegal Move
+							}
+						}
+						else if ((row2 == row1 - 1 && col2 == col1 - 1)) {
+							if ((board.board[row1 - 1][col1 - 1] != nullptr)) {
+								if ((board.board[row1][col1]->getColor() != board.board[row1 - 1][col1 - 1]->getColor())) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
+							}
+							else {
+								checker = false;	//Illegal Move
+							}
+						}
+						else {
+							checker = false;	//Illegal Move
+						}
+					}
+					else {
+						checker = false;	//Illegal Move
+					}
+				}
+			}
 		}
 		else {
 			checker = false;	//Illegal Move
 		}
-		return checker;
+
 	}
+	else {
+		checker = false;	//Illegal Move
+	}
+	return checker;
 }
 //Overriden Function to check if moev is validate
 bool Rook::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
