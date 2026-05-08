@@ -438,8 +438,30 @@ bool Queen::isValid(int col1, int row1, int col2, int row2, Board& board, bool c
 }
 //Overriden Function to check if moev is validate
 bool King::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
+	bool checker = true;
+	if (board.board[row1][col1]->getColor() == color) {
+		if ((abs(row2 - row1) == 1 && col2 == col1) || (row2 == row1 && abs(col2 - col1) == 1) || (abs(row2 - row1) == 1 && abs(col2 - col1) == 1)) {
+			if (board.board[row2][col2] != nullptr) {
+				if (board.board[row1][col1]->getColor() != board.board[row2][col2]->getColor()) {
+					checker = true;
+				}
+				else {
+					checker = false;	//Illegal Move
+				}
+			}
+			else {
+				checker = true;
+			}
+		}
+		else {
+			checker = false;	//Illegal Move
+		}
+	}
+	else {
+		checker = false;	//Illegal Move
+	}
 	///////////////////////////////////
-	return 1;
+	return checker;
 }
 
 //Class - PLayer
