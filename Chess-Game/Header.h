@@ -12,7 +12,7 @@ static int greenKingCol = 4;
 static int redKingRow = 7;
 static int redKingCol = 4;
 
-class Board;		//Forwar Declaration
+class Board;		//Forward Declaration
 //Structur For Position
 struct Pos {
 	int col;

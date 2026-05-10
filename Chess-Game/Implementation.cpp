@@ -32,6 +32,7 @@ bool check(Board& board, bool color) {
 	}
 	return false;
 }
+
 //Class - Piece
 Piece::Piece() {};
 Piece::Piece(char sym, bool white) :symb(sym), isWhite(white) {
@@ -395,11 +396,141 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 	}
 	return checker;
 }
-//Overriden Function to check if moev is validate
+
+//Overriden Function to check validate move
 bool Rook::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
-	///////////////////////////////////
-	return 1;
+
+	bool checker = true;
+	if ((row1 != row2) || (col1 != col2)) {
+		if (row1 == row2) {			//move in same row
+
+			if (col2 > col1) {		//move forward
+				for (int i = col1 + 1; i < col2; i++) {
+					if (board.board[row1][i] == nullptr) {		//check for obstacle in path
+						checker = true;
+					}
+					else {
+						checker = false;		//Illegal Move
+						break;
+					}
+				}
+				if (checker) {
+					if (board.board[row1][col2] != nullptr) {
+						if (board.board[row1][col1]->getColor() != board.board[row1][col2]->getColor()) {		//check colors are different
+							checker = true;
+						}
+						else {
+							checker = false;		//Illegal Move
+						}
+					}
+					else {
+						checker = true;
+					}
+				}
+				else {
+					checker = false;		//Illegal Move
+				}
+			}
+			else {		//move backward
+				for (int i = col1 - 1; i > col2; i--) {
+					if (board.board[row1][i] == nullptr) {		//check for obstacle in path
+						checker = true;
+					}
+					else {
+						checker = false;		//Illegal Move
+						break;
+					}
+				}
+				if (checker) {
+					if (board.board[row1][col2] != nullptr) {
+						if (board.board[row1][col1]->getColor() != board.board[row1][col2]->getColor()) {		//check colors are different
+							checker = true;
+						}
+						else {
+							checker = false;		//Illegal Move
+						}
+					}
+					else {
+						checker = true;
+					}
+				}
+				else {
+					checker = false;		//Illegal Move
+				}
+			}
+		}
+		else if (col1 == col2) {		//move in same coloumn
+
+			if (row2 > row1) {		//move upward
+
+				for (int i = row1 + 1; i < row2; i++) {
+					if (board.board[i][col1] == nullptr) {		//check for obstacle in path
+						checker = true;
+					}
+					else {
+						checker = false;		//Illegal Move
+						break;
+					}
+				}
+				if (checker) {
+					if (board.board[row2][col1] != nullptr) {
+						if (board.board[row1][col1]->getColor() != board.board[row2][col1]->getColor()) {		//check colors are different
+							checker = true;
+						}
+						else {
+							checker = false;		//Illegal Move
+						}
+					}
+					else {
+						checker = true;
+					}
+				}
+				else {
+					checker = false;		//Illegal Move
+				}
+
+			}
+			else {		//move downward
+
+				for (int i = row1 - 1; i < row2; i--) {
+					if (board.board[i][col1] == nullptr) {		//check for obstacle in path
+						checker = true;
+					}
+					else {
+						checker = false;		//Illegal Move
+						break;
+					}
+				}
+				if (checker) {
+					if (board.board[row2][col1] != nullptr) {
+						if (board.board[row1][col1]->getColor() != board.board[row2][col1]->getColor()) {		//check colors are different
+							checker = true;
+						}
+						else {
+							checker = false;		//Illegal Move
+						}
+					}
+					else {
+						checker = true;
+					}
+				}
+				else {
+					checker = false;		//Illegal Move
+				}
+			}
+		}
+		else {
+
+			checker = false;		//Illegal Move
+		}
+	}
+	else {
+
+		checker = false;		//Illegal Move
+	}
+	return checker;
 }
+
 //Overriden Function to check if moev is validate
 bool Knight::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
 	bool checker = true;
@@ -627,7 +758,7 @@ void Game::play() {
 //Function to Check Game Over
 bool Game::checkGameOver() {
 	count++;
-	if (count == 5)
+	if (count == 15)
 		return 0;
 	else
 		return 1;
