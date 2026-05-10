@@ -406,57 +406,25 @@ bool Rook::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 
 			if (col2 > col1) {		//move forward
 				for (int i = col1 + 1; i < col2; i++) {
-					if (board.board[row1][i] == nullptr) {		//check for obstacle in path
-						checker = true;
-					}
-					else {
+					if (board.board[row1][i] != nullptr) {		//check for obstacle in path
+
 						checker = false;		//Illegal Move
 						break;
 					}
+
 				}
-				if (checker) {
-					if (board.board[row1][col2] != nullptr) {
-						if (board.board[row1][col1]->getColor() != board.board[row1][col2]->getColor()) {		//check colors are different
-							checker = true;
-						}
-						else {
-							checker = false;		//Illegal Move
-						}
-					}
-					else {
-						checker = true;
-					}
-				}
-				else {
-					checker = false;		//Illegal Move
-				}
+
 			}
 			else {		//move backward
 				for (int i = col1 - 1; i > col2; i--) {
-					if (board.board[row1][i] == nullptr) {		//check for obstacle in path
-						checker = true;
-					}
-					else {
+					if (board.board[row1][i] != nullptr) {		//check for obstacle in path
+
 						checker = false;		//Illegal Move
 						break;
 					}
+
 				}
-				if (checker) {
-					if (board.board[row1][col2] != nullptr) {
-						if (board.board[row1][col1]->getColor() != board.board[row1][col2]->getColor()) {		//check colors are different
-							checker = true;
-						}
-						else {
-							checker = false;		//Illegal Move
-						}
-					}
-					else {
-						checker = true;
-					}
-				}
-				else {
-					checker = false;		//Illegal Move
-				}
+
 			}
 		}
 		else if (col1 == col2) {		//move in same coloumn
@@ -464,59 +432,26 @@ bool Rook::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 			if (row2 > row1) {		//move upward
 
 				for (int i = row1 + 1; i < row2; i++) {
-					if (board.board[i][col1] == nullptr) {		//check for obstacle in path
-						checker = true;
-					}
-					else {
+					if (board.board[i][col1] != nullptr) {		//check for obstacle in path
 						checker = false;		//Illegal Move
 						break;
 					}
+
 				}
-				if (checker) {
-					if (board.board[row2][col1] != nullptr) {
-						if (board.board[row1][col1]->getColor() != board.board[row2][col1]->getColor()) {		//check colors are different
-							checker = true;
-						}
-						else {
-							checker = false;		//Illegal Move
-						}
-					}
-					else {
-						checker = true;
-					}
-				}
-				else {
-					checker = false;		//Illegal Move
-				}
+
 
 			}
 			else {		//move downward
 
-				for (int i = row1 - 1; i < row2; i--) {
-					if (board.board[i][col1] == nullptr) {		//check for obstacle in path
-						checker = true;
-					}
-					else {
+				for (int i = row1 - 1; i > row2; i--) {
+					if (board.board[i][col1] != nullptr) {		//check for obstacle in path
+
 						checker = false;		//Illegal Move
 						break;
 					}
+
 				}
-				if (checker) {
-					if (board.board[row2][col1] != nullptr) {
-						if (board.board[row1][col1]->getColor() != board.board[row2][col1]->getColor()) {		//check colors are different
-							checker = true;
-						}
-						else {
-							checker = false;		//Illegal Move
-						}
-					}
-					else {
-						checker = true;
-					}
-				}
-				else {
-					checker = false;		//Illegal Move
-				}
+
 			}
 		}
 		else {
@@ -528,6 +463,15 @@ bool Rook::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 
 		checker = false;		//Illegal Move
 	}
+
+	if (checker) {
+		if (board.board[row2][col2] != nullptr) {
+			if (board.board[row1][col1]->getColor() == board.board[row2][col2]->getColor()) {		//check colors are different
+				checker = false;		//Illegal Move
+			}
+		}
+	}
+
 	return checker;
 }
 
@@ -624,8 +568,106 @@ bool Bishop::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 
 //Overriden Function to check if moev is validate
 bool Queen::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
-	///////////////////////////////////
-	return 1;
+	bool checker = true;
+	if ((row1 == row2) || (col1 == col2)) {
+		if (row1 == row2) {			//move in same row
+
+			if (col2 > col1) {		//move forward
+				for (int i = col1 + 1; i < col2; i++) {
+					if (board.board[row1][i] != nullptr) {		//check for obstacle in path
+
+						checker = false;		//Illegal Move
+						break;
+					}
+
+				}
+
+			}
+			else {		//move backward
+				for (int i = col1 - 1; i > col2; i--) {
+					if (board.board[row1][i] != nullptr) {		//check for obstacle in path
+
+						checker = false;		//Illegal Move
+						break;
+					}
+
+				}
+
+			}
+		}
+		else {		//move in same coloumn
+
+			if (row2 > row1) {		//move upward
+
+				for (int i = row1 + 1; i < row2; i++) {
+					if (board.board[i][col1] != nullptr) {		//check for obstacle in path
+						checker = false;		//Illegal Move
+						break;
+					}
+
+				}
+
+
+			}
+			else {		//move downward
+
+				for (int i = row1 - 1; i > row2; i--) {
+					if (board.board[i][col1] != nullptr) {		//check for obstacle in path
+
+						checker = false;		//Illegal Move
+						break;
+					}
+
+				}
+
+			}
+		}
+
+		if (checker) {
+			if (board.board[row2][col2] != nullptr) {
+				if (board.board[row1][col1]->getColor() == board.board[row2][col2]->getColor()) {		//check colors are different
+					checker = false;		//Illegal Move
+				}
+			}
+		}
+
+	}
+	else if (abs(row2 - row1) == abs(col2 - col1)) {
+		if (board.board[row2][col2] != nullptr) {
+			if (board.board[row1][col1]->getColor() == board.board[row2][col2]->getColor()) {
+				checker = false;	//Illegal Move
+				return checker;
+			}
+			else {
+				checker = true;
+			}
+		}
+		else {
+			checker = true;
+		}
+		//check path obstacle
+		int rowDirection = (row2 - row1) / abs(row2 - row1);    //-1 or +1
+		int colDirection = (col2 - col1) / abs(col2 - col1);    //-1 or +1
+		for (int i = row1 + rowDirection; i != row2 && checker == true; i += rowDirection) {
+			for (int j = col1 + colDirection; j != col2 && checker == true; j += colDirection) {
+				if (abs(i - row1) == abs(j - col1)) {
+					if (board.board[i][j] != nullptr) {
+						checker = false;	//Illegal Move
+						break;
+					}
+					else {
+						checker = true;
+					}
+				}
+			}
+		}
+	}
+	else {
+
+		checker = false;		//Illegal Move
+	}
+
+	return checker;
 }
 //Overriden Function to check if moev is validate
 bool King::isValid(int col1, int row1, int col2, int row2, Board& board, bool color) {
@@ -688,15 +730,27 @@ void Player::makeMove(string from, string to, Board& board, bool color) {
 	//col2 = to[0];
 	row2 = to[1] - '0';
 
-	bool checker = board.board[row1 - 1][col1]->isValid(col1, row1 - 1, col2, row2 - 1, board, color);
-	if (checker) {
-		board.board[row2 - 1][col2] = board.board[row1 - 1][col1];
-		board.board[row1 - 1][col1] = nullptr;
-		cout << "\n\n";
-		board.display();
+	if (board.board[row1 - 1][col1] != nullptr) {
+		if (board.board[row1 - 1][col1]->getColor() == color) {
+			bool checker = board.board[row1 - 1][col1]->isValid(col1, row1 - 1, col2, row2 - 1, board, color);
+			if (checker) {
+				board.board[row2 - 1][col2] = board.board[row1 - 1][col1];
+				board.board[row1 - 1][col1] = nullptr;
+				cout << "\n\n";
+				board.display();
+			}
+			else {
+				cout << "\n\n===Illegal Move===\n";
+				board.display();
+			}
+		}
+		else {
+			cout << "\n\n===Illegal Move===\n";
+			board.display();
+		}
 	}
 	else {
-		cout << "\n\n\t\t\t\t===Illegal Move===\n";
+		cout << "\n\n===Illegal Move===\n";
 		board.display();
 	}
 }
