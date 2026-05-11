@@ -2,7 +2,7 @@
 
 ///////Friend Function to check if move is valid ////////
 bool check(Board& board, bool color) {
-	if (color) {			//Cheking Check on Green King
+	if (!color) {			//Cheking Check on Green King
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (board.board[i][j] != nullptr) {
@@ -384,16 +384,16 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 	else {
 		checker = false;	//Illegal Move
 	}
-	if (checker) {
-		bool test;
-		if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
-			test = check(board, color);
+	//if (checker) {
+	//	bool test;
+	//	if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
+	//		test = check(board, color);
 
-		}
-		else {			//Red Moved    checking if check on green king
-			test = check(board, color);
-		}
-	}
+	//	}
+	//	else {			//Red Moved    checking if check on green king
+	//		test = check(board, color);
+	//	}
+	//}
 	return checker;
 }
 
@@ -471,6 +471,15 @@ bool Rook::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 			}
 		}
 	}
+	//if (checker) {
+	//	bool test;
+	//	if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
+	//		test = check(board, color);
+	//	}
+	//	else {			//Red Moved    checking if check on green king
+	//		test = check(board, color);
+	//	}
+	//}
 
 	return checker;
 }
@@ -500,15 +509,15 @@ bool Knight::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 		checker = false;	//Illegal Move
 	}
 	///////////////////////////////////
-	if (checker) {
-		bool test;
-		if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
-			test = check(board, color);
-		}
-		else {			//Red Moved    checking if check on green king
-			test = check(board, color);
-		}
-	}
+	//if (checker) {
+	//	bool test;
+	//	if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
+	//		test = check(board, color);
+	//	}
+	//	else {			//Red Moved    checking if check on green king
+	//		test = check(board, color);
+	//	}
+	//}
 	return checker;
 }
 //Overriden Function to check if moev is validate
@@ -554,15 +563,15 @@ bool Bishop::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 		checker = false;	//Illegal Move
 	}
 	///////////////////////////////////
-	if(checker) {
-		bool test;
-		if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
-			test = check(board, color);
-		}
-		else {			//Red Moved    checking if check on green king
-			test = check(board, color);
-		}
-	}
+	//if(checker) {
+	//	bool test;
+	//	if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
+	//		test = check(board, color);
+	//	}
+	//	else {			//Red Moved    checking if check on green king
+	//		test = check(board, color);
+	//	}
+	//}
 	return checker;
 }
 
@@ -666,7 +675,15 @@ bool Queen::isValid(int col1, int row1, int col2, int row2, Board& board, bool c
 
 		checker = false;		//Illegal Move
 	}
-
+	//if (checker) {
+	//	bool test;
+	//	if (board.board[row1][col1]->getColor()) {		//Green Moved    checking if check on red king
+	//		test = check(board, color);
+	//	}
+	//	else {			//Red Moved    checking if check on green king
+	//		test = check(board, color);
+	//	}
+	//}
 	return checker;
 }
 //Overriden Function to check if moev is validate
@@ -737,7 +754,16 @@ void Player::makeMove(string from, string to, Board& board, bool color) {
 				board.board[row2 - 1][col2] = board.board[row1 - 1][col1];
 				board.board[row1 - 1][col1] = nullptr;
 				cout << "\n\n";
-				board.display();
+				if (checker) {
+					bool test;
+					test = check(board, color);
+					cout << "\n\n";
+					board.display();
+				}
+				else {
+					cout << "\n\n===Illegal Move===\n";
+					board.display();
+				}
 			}
 			else {
 				cout << "\n\n===Illegal Move===\n";
@@ -749,14 +775,10 @@ void Player::makeMove(string from, string to, Board& board, bool color) {
 			board.display();
 		}
 	}
-	else {
-		cout << "\n\n===Illegal Move===\n";
-		board.display();
-	}
 }
 
 //Class - Game
-Game::Game() :count(0), converter(1) {
+	Game::Game(): count(0), converter(1) {
 	string name;
 	cout << "\nEnter Player 1 Name : ";
 	getline(cin, name);
