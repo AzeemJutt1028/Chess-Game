@@ -200,6 +200,8 @@ void Board::initializeBoard() {
 
 //Function to display board
 void Board::display() const {
+	cout << "    A       B       C       D       E       F       G       H\n";
+	int disp = 1;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			cout << "+-------";
@@ -220,6 +222,7 @@ void Board::display() const {
 			}
 		}
 		cout << "|";
+		cout << "  " << disp++;
 		if (i == 7) {
 			cout << "\n";
 			for (int j = 0; j < 8; j++) {
@@ -553,7 +556,7 @@ bool Knight::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 	else {
 		checker = false;	//Illegal Move
 	}
-	
+
 	return checker;
 }
 //Overriden Function to check if moev is validate - for Bishop
@@ -562,7 +565,7 @@ bool Bishop::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 
 	if (board.board[row1][col1]->getColor() == color) {
 		if (abs(row2 - row1) == abs(col2 - col1)) {
-			if(board.board[row2][col2] != nullptr) {
+			if (board.board[row2][col2] != nullptr) {
 				if (board.board[row1][col1]->getColor() == board.board[row2][col2]->getColor()) {
 					checker = false;	//Illegal Move
 					return checker;
@@ -599,7 +602,7 @@ bool Bishop::isValid(int col1, int row1, int col2, int row2, Board& board, bool 
 	else {
 		checker = false;	//Illegal Move
 	}
-	
+
 	return checker;
 }
 
@@ -921,7 +924,7 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 }
 
 //Class - Game
-	Game::Game(): isWhiteTurn(1) {
+Game::Game() : isWhiteTurn(1) {
 	string name;
 	cout << "\nEnter Player 1 Name : ";
 	getline(cin, name);
@@ -935,7 +938,7 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 void Game::startGame() {
 	board.initializeBoard();
 	board.display();
-	
+
 	while (true) {
 		if (!checkGameOver()) {
 			play();
@@ -948,7 +951,7 @@ void Game::startGame() {
 }
 //Function to Switch Turn
 bool Game::switchTurn() {
-	
+
 	if (isWhiteTurn) {
 		return 1;
 	}
