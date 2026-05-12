@@ -1,27 +1,14 @@
-#include "Header.h"
+﻿#include "Header.h"
 
 ///////Friend Function to check if move is valid ////////
 bool check(Board& board, bool color) {
-	if (!color) {			//Cheking Check on Green King
+	if (color) {           // Checking Check on Red King
+		
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (board.board[i][j] != nullptr) {
 					if (board.board[i][j]->getColor() != color) {
-						if (board.board[i][j]->isValid(j, i, greenKingCol, greenKingRow, board, !color)) {
-							cout << "\n\n\t\t\t\t===Check on Green King===\n";
-							return true;
-						}
-					}
-				}
-			}
-		}
-	}
-	else {					//Cheking Check on Red King
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				if (board.board[i][j] != nullptr) {
-					if (board.board[i][j]->getColor() != color) {
-						if (board.board[i][j]->isValid(j, i, redKingCol, redKingRow, board, !color)) {
+						if (board.board[i][j]->isValid(j, i, redKingCol, redKingRow, board, board.board[i][j]->getColor())) {
 							cout << "\n\n\t\t\t\t===Check on Red King===\n";
 							return true;
 						}
@@ -29,6 +16,21 @@ bool check(Board& board, bool color) {
 				}
 			}
 		}
+	}
+	else {				// Checking Check on Green King
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (board.board[i][j] != nullptr) {
+					if (board.board[i][j]->getColor() != color) {
+						if (board.board[i][j]->isValid(j, i, greenKingCol, greenKingRow, board, board.board[i][j]->getColor())) {
+							cout << "\n\n\t\t\t\t===Check on Green King===\n";
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
 	}
 	return false;
 }
@@ -374,6 +376,52 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 						checker = false;	//Illegal Move
 					}
 				}
+				else {   // Red pawn not on starting row
+					if (row1 - 1 == row2) {
+						if (col1 == col2) {
+							if (board.board[row1 - 1][col1] == nullptr) {
+								checker = true;
+							}
+							else {
+								checker = false;   // Blocked
+							}
+						}
+						else if (row2 == row1 - 1 && col2 == col1 + 1) {
+							if (board.board[row1 - 1][col1 + 1] != nullptr) {
+								if (board.board[row1][col1]->getColor() !=
+									board.board[row1 - 1][col1 + 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;   // Same color
+								}
+							}
+							else {
+								checker = false;   // Nothing to capture
+							}
+						}
+						else if (row2 == row1 - 1 && col2 == col1 - 1) {
+							if (board.board[row1 - 1][col1 - 1] != nullptr) {
+								if (board.board[row1][col1]->getColor() !=
+									board.board[row1 - 1][col1 - 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;   // Same color
+								}
+							}
+							else {
+								checker = false;   // Nothing to capture
+							}
+						}
+						else {
+							checker = false;   // Illegal Move
+						}
+					}
+					else {
+						checker = false;   // Illegal Move
+					}
+				}
 			}
 		}
 		else {
@@ -711,19 +759,6 @@ bool King::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 		checker = false;	//Illegal Move
 	}
 
-	//king position update//
-	if(checker) {
-		if (board.board[row1][col1]->getColor()) {		//Green King
-			greenKingRow = row2;
-			greenKingCol = col2;
-		}
-		else {			//Red King
-			redKingRow = row2;
-			redKingCol = col2;
-		}
-	}
-
-
 	///////////////////////////////////
 	return checker;
 }
@@ -741,27 +776,69 @@ bool Player::getColor() {
 void Player::makeMove(string from, string to, Board& board, bool color) {
 	int col1, row1, col2, row2;
 	col1 = tolower(from[0]) - 'a';
-	//col1 = from[0];
 	row1 = from[1] - '0';
 	col2 = tolower(to[0]) - 'a';
-	//col2 = to[0];
 	row2 = to[1] - '0';
 
 	if (board.board[row1 - 1][col1] != nullptr) {
 		if (board.board[row1 - 1][col1]->getColor() == color) {
 			bool checker = board.board[row1 - 1][col1]->isValid(col1, row1 - 1, col2, row2 - 1, board, color);
 			if (checker) {
+
+				// King position update (Bug 3 fix)
+				// Save old king position BEFORE updating
+				int oldGreenKingRow = greenKingRow;
+				int oldGreenKingCol = greenKingCol;
+				int oldRedKingRow = redKingRow;
+				int oldRedKingCol = redKingCol;
+
+				// Now update king coordinates for simulation
+				if (board.board[row1 - 1][col1]->getSymbol() == 'K' ||
+					board.board[row1 - 1][col1]->getSymbol() == 'k') {
+					if (board.board[row1 - 1][col1]->getColor()) {
+						greenKingRow = row2 - 1;
+						greenKingCol = col2;
+					}
+					else {
+						redKingRow = row2 - 1;
+						redKingCol = col2;
+					}
+				}
+
+				// Line 753 replacement — save captured piece first
+				Piece* captured = board.board[row2 - 1][col2];
+
+				// Simulate move temporarily
 				board.board[row2 - 1][col2] = board.board[row1 - 1][col1];
 				board.board[row1 - 1][col1] = nullptr;
-				cout << "\n\n";
-				if (checker) {
-					bool test;
-					test = check(board, color);
-					cout << "\n\n";
+
+				// Check if YOUR OWN king is now exposed
+				bool selfInCheck = check(board, !color);
+
+				if (selfInCheck) {
+					// Undo the move — restore both squares
+					board.board[row1 - 1][col1] = board.board[row2 - 1][col2];
+					board.board[row2 - 1][col2] = captured;
+
+					// Also restore king coordinates if king was moved
+					// Replace Lines 822-826 with this:
+					greenKingRow = oldGreenKingRow;
+					greenKingCol = oldGreenKingCol;
+					redKingRow = oldRedKingRow;
+					redKingCol = oldRedKingCol;
+
+					cout << "\n\n===Illegal Move: Leaves Your King in Check===\n";
 					board.display();
 				}
 				else {
-					cout << "\n\n===Illegal Move===\n";
+					// Move is legal — check if OPPONENT is now in check
+					bool opponentInCheck = check(board, color);
+					if (opponentInCheck) {
+						cout << "\n\n\t\t\t\t===Check on Opponent King===\n";
+					}
+					else {
+						cout << "No check.\n";
+					}
 					board.display();
 				}
 			}
@@ -775,9 +852,7 @@ void Player::makeMove(string from, string to, Board& board, bool color) {
 			board.display();
 		}
 	}
-}
-
-//Class - Game
+}//Class - Game
 	Game::Game(): count(0), converter(1) {
 	string name;
 	cout << "\nEnter Player 1 Name : ";
@@ -833,10 +908,28 @@ void Game::play() {
 }
 //Function to Check Game Over
 bool Game::checkGameOver() {
-	count++;
-	if (count == 15)
-		return 0;
-	else
-		return 1;
-}
+	// Check if either king has been captured
+	bool greenKingAlive = false;
+	bool redKingAlive = false;
 
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (board.board[i][j] != nullptr) {
+				if (board.board[i][j]->getSymbol() == 'K')
+					greenKingAlive = true;   // Green king symbol
+				if (board.board[i][j]->getSymbol() == 'k')
+					redKingAlive = true;     // Red king symbol
+			}
+		}
+	}
+
+	if (!greenKingAlive) {
+		cout << "\n\n===Red Player Wins! Green King Captured===\n";
+		return false;   // Game over
+	}
+	if (!redKingAlive) {
+		cout << "\n\n===Green Player Wins! Red King Captured===\n";
+		return false;   // Game over
+	}
+	return true;   // Game continues
+}
