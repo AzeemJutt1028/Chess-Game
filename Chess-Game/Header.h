@@ -14,10 +14,10 @@ static int redKingCol = 4;
 
 class Board;		//Forward Declaration
 //Structur For Position
-struct Pos {
-	int col;
-	int row;
-};
+//struct Pos {
+//	int col;
+//	int row;
+//};
 
 //Class - Piece
 class Piece {
@@ -48,7 +48,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	friend bool check(Board& board, bool color);
+	//friend bool check(Board& board, bool color);
 };
 
 //Class - Rook
@@ -62,7 +62,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	friend bool check(Board& board, bool color);
+	//friend bool check(Board& board, bool color);
 };
 
 //Class - Knight
@@ -76,7 +76,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	friend bool check(Board& board, bool color);
+	//friend bool check(Board& board, bool color);
 };
 
 //Class - Bishop
@@ -90,7 +90,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	friend bool check(Board& board, bool color);
+	//friend bool check(Board& board, bool color);
 };
 
 //Class - Queen
@@ -104,7 +104,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	friend bool check(Board& board, bool color);
+	//friend bool check(Board& board, bool color);
 };
 
 //Class - King
@@ -118,7 +118,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	friend bool check(Board& board, bool color);
+	//friend bool check(Board& board, bool color);
 };
 
 //Class - Board 
@@ -145,8 +145,10 @@ public:
 	Player(string n, bool white);
 	//Function to get color of player
 	bool getColor();
+	//Function to get Player Name
+	string getName();
 	//Function to make move
-	void makeMove(string from, string to, Board& board, bool color);
+	bool makeMove(string from, string to, Board& board, bool color);
 };
 
 //Class - Game
