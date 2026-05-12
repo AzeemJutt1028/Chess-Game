@@ -898,7 +898,76 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 					if (check(board, oppColor)) {
 						//////Check Statement is Printed in Check Function//////
 					}
-
+					if (checker) {
+						if (temp->getSymbol() == 'P') {
+							if (row2 == 7) {
+								cout << "===Pawn Promotion===\n";
+								int choice;
+								do {
+									cout << "Choose piece to promote to (1-Queen, 2-Rook, 3-Bishop, 4-Knight) : ";
+									cin >> choice;
+									cin.ignore();
+									if (choice == 1) {
+										board.board[row2][col2] = new Queen('Q', 1);
+										board.display();
+										break;
+									}
+									else if (choice == 2) {
+										board.board[row2][col2] = new Rook('R', 1);
+										board.display();
+										break;
+									}
+									else if (choice == 3) {
+										board.board[row2][col2] = new Bishop('B', 1);
+										board.display();
+										break;
+									}
+									else if (choice == 4) {
+										board.board[row2][col2] = new Knight('N', 1);
+										board.display();
+										break;
+									}
+									else {
+										cout << "Invalid Choice, Try Again...\n";
+									}
+								} while (true);
+							}
+						}
+						else if (temp->getSymbol() == 'p') {
+							if (row2 == 0) {
+								cout << "===Pawn Promotion===\n";
+								int choice;
+								do {
+									cout << "Choose piece to promote to (1-Queen, 2-Rook, 3-Bishop, 4-Knight) : ";
+									cin >> choice;
+									cin.ignore();
+									if (choice == 1) {
+										board.board[row2][col2] = new Queen('q', 0);
+										board.display();
+										break;
+									}
+									else if (choice == 2) {
+										board.board[row2][col2] = new Rook('r', 0);
+										board.display();
+										break;
+									}
+									else if (choice == 3) {
+										board.board[row2][col2] = new Bishop('b', 0);
+										board.display();
+										break;
+									}
+									else if (choice == 4) {
+										board.board[row2][col2] = new Knight('n', 0);
+										board.display();
+										break;
+									}
+									else {
+										cout << "Invalid Choice, Try Again...\n";
+									}
+								} while (true);
+							}
+						}
+					}
 					return 1;
 				}
 				else {
