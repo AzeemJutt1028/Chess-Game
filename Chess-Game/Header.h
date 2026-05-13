@@ -13,22 +13,18 @@ static int redKingRow = 7;
 static int redKingCol = 4;
 
 class Board;		//Forward Declaration
-//Structur For Position
-//struct Pos {
-//	int col;
-//	int row;
-//};
 
 //Class - Piece
 class Piece {
 protected:
 	char symb;
 	bool isWhite;
-	//Pos pos;
+	
 
 public:
+	bool isMoved;
 	Piece();
-	Piece(char sym, bool white);
+	Piece(char sym, bool white, bool ismoved);
 	//Virtual Function to check if moev is validate
 	virtual bool isValid(int col1, int row1, int col2, int row2, Board& board, bool color);
 	//Virtual Function to get symbol

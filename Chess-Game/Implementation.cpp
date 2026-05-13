@@ -44,7 +44,7 @@ bool check(Board& board, bool color) {
 
 //Class - Piece
 Piece::Piece() {};
-Piece::Piece(char sym, bool white) :symb(sym), isWhite(white) {
+Piece::Piece(char sym, bool white, bool ismoved) :symb(sym), isWhite(white), isMoved(ismoved) {
 	//Initializer List Used
 }
 //Virtual Function to get symbol
@@ -58,7 +58,7 @@ bool Piece::getColor()const {
 
 //Class - Pawn
 Pawn::Pawn() {};
-Pawn::Pawn(char sym, bool white) :Piece(sym, white) {
+Pawn::Pawn(char sym, bool white) :Piece(sym, white, 1) {
 	//Initializer List Used
 }
 //Overriden Function to get symbol - for Pawn
@@ -72,7 +72,7 @@ bool Pawn::getColor()const {
 
 //Class - Rook
 Rook::Rook() {};
-Rook::Rook(char sym, bool white) :Piece(sym, white) {
+Rook::Rook(char sym, bool white) :Piece(sym, white, 1) {
 	//Initializer List Used
 }
 //Overriden Function to get symbol - for Rook
@@ -87,7 +87,7 @@ bool Rook::getColor()const {
 
 //Class - Knight
 Knight::Knight() {};
-Knight::Knight(char sym, bool white) :Piece(sym, white) {
+Knight::Knight(char sym, bool white) :Piece(sym, white, 1) {
 	//Initializer List Used
 }
 //Overriden Function to get symbol - for Knight
@@ -102,7 +102,7 @@ bool Knight::getColor()const {
 
 //Class - Bishop
 Bishop::Bishop() {};
-Bishop::Bishop(char sym, bool white) :Piece(sym, white) {
+Bishop::Bishop(char sym, bool white) :Piece(sym, white, 1) {
 	//Initializer List Used
 }
 //Overriden Function to get symbol - for Bishop
@@ -117,7 +117,7 @@ bool Bishop::getColor()const {
 
 //Class - Queen
 Queen::Queen() {};
-Queen::Queen(char sym, bool white) :Piece(sym, white) {
+Queen::Queen(char sym, bool white) :Piece(sym, white, 1) {
 	//Initializer List Used
 }
 //Overriden Function to get symbol - for Queen
@@ -132,7 +132,7 @@ bool Queen::getColor()const {
 
 //Class - King
 King::King() {};
-King::King(char sym, bool white) :Piece(sym, white) {
+King::King(char sym, bool white) :Piece(sym, white, 1) {
 	//Initializer List Used
 }
 //Overriden Function to get symbol - for King
@@ -742,6 +742,293 @@ bool King::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 		checker = false;	//Illegal Move
 	}
 
+
+	//Cheking Validations for Castling..........
+	if (color && row2 == 0 && col2 == 6) {
+		checker = false;
+		if (board.board[row1][col1]->isMoved) {
+			if (board.board[0][7]->isMoved) {
+
+				//Checking Piece in Path
+				for (int i = col1 + 1; i < 7; i++) {
+					if (board.board[row1][i] != nullptr) {
+
+						return 0;
+					}
+				}
+
+				//check if king is already in check
+				if (!isInCheck(board, color)) {
+
+					//Temporary move king one step
+					board.board[0][5] = board.board[0][4];
+					board.board[0][4] = nullptr;
+					int saveKingCol = greenKingCol;
+					greenKingCol = 5;
+
+					//now check if IsInCheck
+					if (!isInCheck(board, color)) {
+
+						//Temporary move king one more step
+						board.board[0][6] = board.board[0][5];
+						board.board[0][5] = nullptr;
+						greenKingCol = 6;
+
+						//now check if IsInCheck
+						if (!isInCheck(board, color)) {
+
+							board.board[0][4] = board.board[0][6];
+							board.board[0][6] = nullptr;
+							greenKingCol = saveKingCol;
+							return 1;
+						}
+						else {
+
+							//Move king back
+							board.board[0][4] = board.board[0][6];
+							board.board[0][6] = nullptr;
+							greenKingCol = saveKingCol;
+
+							return 0;
+						}
+					}
+					else {
+
+						//Move king back
+						board.board[0][4] = board.board[0][5];
+						board.board[0][5] = nullptr;
+						greenKingCol = saveKingCol;
+
+						return 0;
+					}
+				}
+				else {
+					return 0;
+				}
+
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			return 0;
+		}
+
+	}
+	else if (color && row2 == 0 && col2 == 2) {
+		checker = false;
+		if (board.board[row1][col1]->isMoved) {
+			if (board.board[0][0]->isMoved) {
+
+				//Checking Piece in Path
+				for (int i = col1 - 1; i > 0; i--) {
+					if (board.board[row1][i] != nullptr) {
+						return 0;
+					}
+				}
+
+				//check if king is already in check
+				if (!isInCheck(board, color)) {
+
+					//Temporary move king one step
+					board.board[0][3] = board.board[0][4];
+					board.board[0][4] = nullptr;
+					int saveKingCol = greenKingCol;
+					greenKingCol = 3;
+
+					//now check if IsInCheck
+					if (!isInCheck(board, color)) {
+
+						//Temporary move king one more step
+						board.board[0][2] = board.board[0][3];
+						board.board[0][3] = nullptr;
+						greenKingCol = 2;
+
+						//now check if IsInCheck
+						if (!isInCheck(board, color)) {
+
+							//Moving King Back
+							board.board[0][4] = board.board[0][2];
+							board.board[0][2] = nullptr;
+							greenKingCol = saveKingCol;
+
+							return 1;
+
+						}
+						else {
+							//Move king back
+							board.board[0][4] = board.board[0][2];
+							board.board[0][2] = nullptr;
+							greenKingCol = saveKingCol;
+
+							return 0;
+						}
+					}
+					else {
+						//Move king back
+						board.board[0][4] = board.board[0][3];
+						board.board[0][3] = nullptr;
+						greenKingCol = saveKingCol;
+
+						return 0;
+					}
+				}
+				else {
+					return 0;
+				}
+
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			return 0;
+		}
+	}
+	else if (!color && row2 == 7 && col2 == 6) {
+		checker = false;
+		if (board.board[row1][col1]->isMoved) {
+			if (board.board[7][7]->isMoved) {
+
+				//Checking Piece in Path
+				for (int i = col1 + 1; i < 7; i++) {
+					if (board.board[row1][i] != nullptr) {
+						return 0;
+					}
+				}
+
+				//check if king is already in check
+				if (!isInCheck(board, color)) {
+
+					//Temporary move king one step
+					board.board[7][5] = board.board[7][4];
+					board.board[7][4] = nullptr;
+					int saveKingCol = redKingCol;
+					redKingCol = 5;
+
+					//now check if IsInCheck
+					if (!isInCheck(board, color)) {
+
+						//Temporary move king one more step
+						board.board[7][6] = board.board[7][5];
+						board.board[7][5] = nullptr;
+						redKingCol = 6;
+
+						//now check if IsInCheck
+						if (!isInCheck(board, color)) {
+
+							board.board[7][4] = board.board[7][6];
+							board.board[7][6] = nullptr;
+							redKingCol = saveKingCol;
+
+							return 1;
+						}
+						else {
+							//Move king back
+							board.board[7][4] = board.board[7][6];
+							board.board[7][6] = nullptr;
+							redKingCol = saveKingCol;
+
+							return 0;
+						}
+					}
+					else {
+						//Move king back
+						board.board[7][4] = board.board[7][5];
+						board.board[7][5] = nullptr;
+						redKingCol = saveKingCol;
+
+						return 0;
+					}
+				}
+				else {
+					return 0;
+				}
+
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			return 0;
+		}
+
+	}
+	else if (!color && row2 == 7 && col2 == 2) {
+		checker = false;
+		if (board.board[row1][col1]->isMoved) {
+			if (board.board[7][0]->isMoved) {
+
+				//Checking Piece in Path
+				for (int i = col1 - 1; i > 0; i--) {
+					if (board.board[row1][i] != nullptr) {
+						return 0;
+					}
+				}
+
+				//check if king is already in check
+				if (!isInCheck(board, color)) {
+
+					//Temporary move king one step
+					board.board[7][3] = board.board[7][4];
+					board.board[7][4] = nullptr;
+					int saveKingCol = redKingCol;
+					redKingCol = 3;
+
+					//now check if IsInCheck
+					if (!isInCheck(board, color)) {
+
+						//Temporary move king one more step
+						board.board[7][2] = board.board[7][3];
+						board.board[7][3] = nullptr;
+						redKingCol = 2;
+
+						//now check if IsInCheck
+						if (!isInCheck(board, color)) {
+
+							//Moving King Back
+							board.board[7][4] = board.board[7][2];
+							board.board[7][2] = nullptr;
+							redKingCol = saveKingCol;
+
+							return 1;
+
+						}
+						else {
+							//Move king back
+							board.board[7][4] = board.board[7][2];
+							board.board[7][2] = nullptr;
+							redKingCol = saveKingCol;
+
+							return 0;
+						}
+					}
+					else {
+						//Move king back
+						board.board[7][4] = board.board[7][3];
+						board.board[7][3] = nullptr;
+						redKingCol = saveKingCol;
+
+						return 0;
+					}
+				}
+				else {
+					return 0;
+				}
+
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			return 0;
+		}
+	}
+
 	return checker;
 }
 
@@ -875,6 +1162,36 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 			if (checker) {
 
 				if (canEscape(board, row1, col1, row2, col2, color)) {
+
+					board.board[row1][col1]->isMoved = false;
+				
+					//Castling.........Rook Movement
+					if (row2 == 0 && col2 == 6) {
+						//Move Rook
+						board.board[0][5] = board.board[0][7];
+						board.board[0][7] = nullptr;
+						cout << "\nUpdating......\n";
+					}
+					else if (row2 == 0 && col2 == 2) {
+						//Move Rook
+						board.board[0][3] = board.board[0][0];
+						board.board[0][0] = nullptr;
+						cout << "\nUpdating......\n";
+					}
+					else if (row2 == 7 && col2 == 6) {
+						//Move Rook
+						board.board[7][5] = board.board[7][7];
+						board.board[7][7] = nullptr;
+						cout << "\nUpdating......\n";
+					}
+					else if (row2 == 7 && col2 == 2) {
+						//Move Rook
+						board.board[7][3] = board.board[7][0];
+						board.board[7][0] = nullptr;
+						cout << "\nUpdating......\n";
+					}
+
+					//Moving/Capturing piece........
 					board.board[row2][col2] = board.board[row1][col1];
 					board.board[row1][col1] = nullptr;
 
