@@ -1,6 +1,9 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include<Windows.h>
+#include<mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"
 #define RESET   "\033[0m"

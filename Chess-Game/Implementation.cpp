@@ -1194,6 +1194,8 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 					//Moving/Capturing piece........
 					board.board[row2][col2] = board.board[row1][col1];
 					board.board[row1][col1] = nullptr;
+					//Playing Sound.......
+					PlaySound(TEXT("moveSound"), NULL, SND_FILENAME | SND_ASYNC);
 
 					//Updating King Positions if Needed
 					Piece* temp = board.board[row2][col2];
