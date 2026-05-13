@@ -210,10 +210,13 @@ void Board::display() const {
 		cout << "\n";
 		for (int k = 0; k < 8; k++) {
 			if (board[i][k] != nullptr) {
-				if (board[i][k]->getColor()) {
+				if (board[i][k]->getSymbol() == '*') {
+					cout << "|  " << CYAN << board[i][k]->getSymbol() << RESET << "    ";
+				}
+				else if (board[i][k]->getColor()) {
 					cout << "|  " << GREEN << board[i][k]->getSymbol() << RESET << "    ";
 				}
-				else {
+				else if (!board[i][k]->getColor()) {
 					cout << "|  " << RED << board[i][k]->getSymbol() << RESET << "    ";
 				}
 			}
@@ -1117,6 +1120,56 @@ bool checkMate(Board& board, bool color) {
 	return 1;
 }
 
+//Function to show path of Selected Piece
+void showPath(Board board, string from, bool color) {
+	//checking size of input string
+	if (from.size() != 2) {
+		cout << "===Invalid input===\n";
+		return;
+	}
+
+	//converting input string to indexes
+	int col1, row1;
+	col1 = tolower(from[0]) - 'a';
+	row1 = from[1] - '1';
+
+	//Checking Boundaries
+	if (row1 < 0 || row1>7 || col1 < 0 || col1>7) {
+		cout << "===Out of bounds===\n";
+		return;
+	}
+
+	//Check if Null Pointer at starting
+	if (board.board[row1][col1] == nullptr) {
+		cout << "\n===There is no Piece===\n";
+		return;
+	}
+
+	bool validMoves[8][8] = {};
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (i == row1 && j == col1) continue;   // skip source cell
+			validMoves[i][j] = board.board[row1][col1]->isValid(col1, row1, j, i, board, color);
+		}
+	}
+
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (validMoves[i][j]) {
+				if (board.board[i][j] == nullptr) {
+					if (color) {
+						board.board[i][j] = new Pawn('*', 1);
+					}
+					else {
+						board.board[i][j] = new Pawn('*', 0);
+					}
+				}
+			}
+		}
+	}
+	board.display();
+}
+
 //Class - PLayer
 Player::Player() {};
 Player::Player(string n, bool white) :name(n), isWhite(white) {
@@ -1364,6 +1417,7 @@ void Game::play() {
 
 			cout << "\nEnter Starting Location : ";
 			getline(cin, from);
+			showPath(board, from, playerColor);
 			cout << "Enter Destination : ";
 			getline(cin, to);
 
@@ -1385,6 +1439,7 @@ void Game::play() {
 
 			cout << "\nEnter Starting Location : ";
 			getline(cin, from);
+			showPath(board, from, playerColor);
 			cout << "Enter Destination : ";
 			getline(cin, to);
 
