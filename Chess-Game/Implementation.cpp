@@ -60,6 +60,7 @@ char Piece::getSymbol() const {
 bool Piece::getColor()const {
 	return this->isWhite;
 }
+Piece::~Piece() {};
 
 //Class - Pawn
 Pawn::Pawn() {};
@@ -74,6 +75,7 @@ char Pawn::getSymbol()const {
 bool Pawn::getColor()const {
 	return this->isWhite;
 }
+Pawn::~Pawn() {};
 
 //Class - Rook
 Rook::Rook() {};
@@ -88,7 +90,7 @@ char Rook::getSymbol()const {
 bool Rook::getColor()const {
 	return this->isWhite;
 }
-
+Rook::~Rook() {};
 
 //Class - Knight
 Knight::Knight() {};
@@ -103,7 +105,7 @@ char Knight::getSymbol()const {
 bool Knight::getColor()const {
 	return this->isWhite;
 }
-
+Knight::~Knight() {};
 
 //Class - Bishop
 Bishop::Bishop() {};
@@ -118,7 +120,7 @@ char Bishop::getSymbol()const {
 bool Bishop::getColor()const {
 	return this->isWhite;
 }
-
+Bishop::~Bishop() {};
 
 //Class - Queen
 Queen::Queen() {};
@@ -133,7 +135,7 @@ char Queen::getSymbol()const {
 bool Queen::getColor()const {
 	return this->isWhite;
 }
-
+Queen::~Queen() {};
 
 //Class - King
 King::King() {};
@@ -148,7 +150,7 @@ char King::getSymbol()const {
 bool King::getColor()const {
 	return this->isWhite;
 }
-
+King::~King() {};
 
 //Class - Board
 Board::Board() {}
@@ -239,6 +241,16 @@ void Board::display() const {
 			cout << "+";
 		}
 		cout << endl;
+	}
+}
+
+// Destructor - Clean up all dynamically allocated pieces
+Board::~Board() {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			delete board[i][j];
+			board[i][j] = nullptr;
+		}
 	}
 }
 
@@ -1214,7 +1226,7 @@ bool checkMate(Board& board, bool color) {
 }
 
 //Function to show path of Selected Piece
-void showPath(Board board, string from, bool color) {
+void showPath(Board& board, string from, bool color) {
 	//checking size of input string
 	if (from.size() != 2) {
 		cout << "===Invalid input===\n";
@@ -1246,21 +1258,40 @@ void showPath(Board board, string from, bool color) {
 		}
 	}
 
+	Piece* tempPaths[8][8] = { nullptr };
+
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
+			//if (i == row1 && j == col1) continue;   // skip source cell
 			if (validMoves[i][j]) {
+				//validMoves[i][j] = true;
+
+				//Saving orignal Piece
+				tempPaths[i][j] = board.board[i][j];
+
+				//path highlinghting
 				if (board.board[i][j] == nullptr) {
-					if (color) {
-						board.board[i][j] = new Pawn('*', 1);
-					}
-					else {
-						board.board[i][j] = new Pawn('*', 0);
-					}
+					board.board[i][j] = new Pawn('*', color);
 				}
+
 			}
 		}
 	}
+	//Displaying Updating Board
 	board.display();
+
+	//Restoer Board
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (validMoves[i][j]) {
+				if (board.board[i][j] && board.board[i][j]->getSymbol() == '*') {
+					delete board.board[i][j];
+				}
+				board.board[i][j] = tempPaths[i][j];
+			}
+		}
+	}
+
 }
 
 //Class - PLayer
@@ -1336,22 +1367,22 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 					if (row2 == 0 && col2 == 6 && moving->getSymbol() == 'K' && moving->getColor()) {
 						board.board[0][5] = board.board[0][7];
 						board.board[0][7] = nullptr;
-						cout << "\nUpdating......\n";
+						
 					}
 					else if (row2 == 0 && col2 == 2 && moving->getSymbol() == 'K' && moving->getColor()) {
 						board.board[0][3] = board.board[0][0];
 						board.board[0][0] = nullptr;
-						cout << "\nUpdating......\n";
+						
 					}
 					else if (row2 == 7 && col2 == 6 && moving->getSymbol() == 'k' && !moving->getColor()) {
 						board.board[7][5] = board.board[7][7];
 						board.board[7][7] = nullptr;
-						cout << "\nUpdating......\n";
+						
 					}
 					else if (row2 == 7 && col2 == 2 && moving->getSymbol() == 'k' && !moving->getColor()) {
 						board.board[7][3] = board.board[7][0];
 						board.board[7][0] = nullptr;
-						cout << "\nUpdating......\n";
+						
 					}
 
 					//Perform the move
@@ -1522,6 +1553,8 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 	}
 }
 
+Player::~Player() {};
+
 //Class - Game
 Game::Game() : isWhiteTurn(1) {
 	string name;
@@ -1570,7 +1603,7 @@ void Game::play() {
 			cout << "\nGreen Player (" << player1->getName() << ")'s Turn\n";
 
 			if (isInCheck(board, playerColor)) {
-				cout << "*** Your King is in CHECK — you must get out of check! ***\n";
+				cout << "*** Your King is in CHECK - you must get out of check! ***\n";
 			}
 
 			cout << "\nEnter Starting Location : ";
@@ -1592,7 +1625,7 @@ void Game::play() {
 			cout << "\nRed Player (" << player2->getName() << ")'s Turn\n";
 
 			if (isInCheck(board, playerColor)) {
-				cout << "*** Your King is in CHECK — you must get out of check! ***\n";
+				cout << "*** Your King is in CHECK - you must get out of check! ***\n";
 			}
 
 			cout << "\nEnter Starting Location : ";
@@ -1628,4 +1661,12 @@ bool Game::checkGameOver() {
 	}
 
 	return 0;
+}
+
+// Destructor - Clean up players
+Game::~Game() {
+	delete player1;
+	delete player2;
+	player1 = nullptr;
+	player2 = nullptr;
 }

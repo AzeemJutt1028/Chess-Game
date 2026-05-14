@@ -36,6 +36,7 @@ public:
 	virtual char getSymbol()const;
 	//Function to get color
 	virtual bool getColor()const;
+	virtual ~Piece();
 };
 
 //Class - Pawn
@@ -49,7 +50,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	//friend bool check(Board& board, bool color);
+	~Pawn()override;
 };
 
 //Class - Rook
@@ -63,7 +64,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	//friend bool check(Board& board, bool color);
+	~Rook()override;
 };
 
 //Class - Knight
@@ -77,7 +78,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	//friend bool check(Board& board, bool color);
+	~Knight()override;
 };
 
 //Class - Bishop
@@ -91,7 +92,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	//friend bool check(Board& board, bool color);
+	~Bishop()override;
 };
 
 //Class - Queen
@@ -105,7 +106,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	//friend bool check(Board& board, bool color);
+	~Queen()override;
 };
 
 //Class - King
@@ -119,7 +120,7 @@ public:
 	char getSymbol()const override;
 	//Overriden Function to get color
 	bool getColor()const override;
-	//friend bool check(Board& board, bool color);
+	~King()override;
 };
 
 //Class - Board 
@@ -133,6 +134,7 @@ public:
 	void initializeBoard();
 	//Function to display board
 	void display() const;
+	~Board();
 };
 
 //Class - PLayer
@@ -150,6 +152,7 @@ public:
 	string getName();
 	//Function to make move
 	bool makeMove(string from, string to, Board& board, bool color);
+	~Player();
 };
 
 //Class - Game
@@ -172,4 +175,5 @@ public:
 	void play();
 	//Function to Check Game Over
 	bool checkGameOver();
+	~Game();
 };
