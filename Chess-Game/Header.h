@@ -3,6 +3,7 @@
 #include<string>
 #include<Windows.h>
 #include<mmsystem.h>
+#include<stdexcept>
 #pragma comment(lib, "winmm.lib")
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"

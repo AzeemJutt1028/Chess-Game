@@ -1413,8 +1413,29 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 								cout << "===Pawn Promotion===\n";
 								int choice;
 								do {
-									cout << "Choose piece to promote to (1-Queen, 2-Rook, 3-Bishop, 4-Knight) : ";
-									cin >> choice;
+									//Input Exception Handling
+									try {
+										cout << "Choose piece to promote to (1-Queen, 2-Rook, 3-Bishop, 4-Knight): ";
+										cin >> choice;
+
+										// Check input type
+										if (cin.fail()) {
+											throw invalid_argument("Invalid input type");
+										}
+
+										// Check range
+										if (choice < 1 || choice > 4) {
+											throw invalid_argument("Invalid choice");
+										}
+									}
+									catch (const invalid_argument& e) {
+										cout << e.what() << ", Try Again...\n";
+
+										cin.clear();              // remove fail state
+										cin.ignore(1000, '\n');  // remove bad input from buffer
+
+										continue;
+									}
 									cin.ignore();
 									if (choice == 1) {
 										board.board[row2][col2] = new Queen('Q', 1);
