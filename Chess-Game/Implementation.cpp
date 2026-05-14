@@ -1,5 +1,10 @@
 ﻿#include "Header.h"
 
+// en-passant tracking (kept in this implementation file so no header changes required)
+static int lastDoublePawnRow = -1;
+static int lastDoublePawnCol = -1;
+static bool lastDoublePawnColor = false;
+
 //Function to check if move is valid
 bool isInCheck(Board& board, bool color) {
 	if (color) {			//Cheking Check on Green King
@@ -264,6 +269,7 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 							}
 						}
 						else if ((row2 == row1 + 1 && col2 == col1 + 1)) {
+							// normal capture
 							if ((board.board[row1 + 1][col1 + 1] != nullptr)) {
 								if ((board.board[row1][col1]->getColor() != board.board[row1 + 1][col1 + 1]->getColor())) {
 									checker = true;
@@ -272,8 +278,17 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 									checker = false;	//Illegal Move
 								}
 							}
+							// en-passant: destination empty but pawn to capture sits at (row1, col2) and is last double
 							else {
-								checker = false;	//Illegal Move
+								if (board.board[row1][col1 + 1] != nullptr &&
+									!board.board[row1][col1 + 1]->getColor() &&
+									lastDoublePawnRow == row1 && lastDoublePawnCol == col1 + 1 &&
+									lastDoublePawnColor == board.board[row1][col1 + 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
 							}
 						}
 						else if ((row2 == row1 + 1 && col2 == col1 - 1)) {
@@ -286,7 +301,15 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 								}
 							}
 							else {
-								checker = false;	//Illegal Move
+								if (board.board[row1][col1 - 1] != nullptr &&
+									!board.board[row1][col1 - 1]->getColor() &&
+									lastDoublePawnRow == row1 && lastDoublePawnCol == col1 - 1 &&
+									lastDoublePawnColor == board.board[row1][col1 - 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
 							}
 						}
 						else {
@@ -317,7 +340,16 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 								}
 							}
 							else {
-								checker = false;	//Illegal Move
+								// allow en-passant capture to the right
+								if (board.board[row1][col1 + 1] != nullptr &&
+									!board.board[row1][col1 + 1]->getColor() &&
+									lastDoublePawnRow == row1 && lastDoublePawnCol == col1 + 1 &&
+									lastDoublePawnColor == board.board[row1][col1 + 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}	//Illegal Move
 							}
 						}
 						else if ((row2 == row1 + 1 && col2 == col1 - 1)) {
@@ -330,7 +362,16 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 								}
 							}
 							else {
-								checker = false;	//Illegal Move
+								// allow en-passant capture to the left
+								if (board.board[row1][col1 - 1] != nullptr &&
+									!board.board[row1][col1 - 1]->getColor() &&
+									lastDoublePawnRow == row1 && lastDoublePawnCol == col1 - 1 &&
+									lastDoublePawnColor == board.board[row1][col1 - 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
 							}
 						}
 						else {
@@ -366,7 +407,16 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 								}
 							}
 							else {
-								checker = false;	//Illegal Move
+								// diagonal empty: allow en-passant if adjacent pawn moved two squares last move
+								if (board.board[row1][col1 + 1] != nullptr &&
+									board.board[row1][col1 + 1]->getColor() &&
+									lastDoublePawnRow == row1 && lastDoublePawnCol == col1 + 1 &&
+									lastDoublePawnColor == board.board[row1][col1 + 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
 							}
 						}
 						else if ((row2 == row1 - 1 && col2 == col1 - 1)) {
@@ -379,7 +429,16 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 								}
 							}
 							else {
-								checker = false;	//Illegal Move
+								// diagonal empty: allow en-passant if adjacent pawn moved two squares last move
+								if (board.board[row1][col1 - 1] != nullptr &&
+									board.board[row1][col1 - 1]->getColor() &&
+									lastDoublePawnRow == row1 && lastDoublePawnCol == col1 - 1 &&
+									lastDoublePawnColor == board.board[row1][col1 - 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;	//Illegal Move
+								}
 							}
 						}
 						else {
@@ -411,7 +470,15 @@ bool Pawn::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 								}
 							}
 							else {
-								checker = false;   // Nothing to capture
+								if (board.board[row1][col1 + 1] != nullptr &&
+									board.board[row1][col1 + 1]->getColor() &&
+									lastDoublePawnRow == row1 && lastDoublePawnCol == col1 + 1 &&
+									lastDoublePawnColor == board.board[row1][col1 + 1]->getColor()) {
+									checker = true;
+								}
+								else {
+									checker = false;   // Illegal Move
+								}
 							}
 						}
 						else if (row2 == row1 - 1 && col2 == col1 - 1) {
@@ -1037,8 +1104,27 @@ bool King::isValid(int col1, int row1, int col2, int row2, Board& board, bool co
 
 //Functions for CHECKMATE
 bool canEscape(Board& board, int row1, int col1, int row2, int col2, bool color) {
-	//Save Destination Piece
+	// Save destination piece
 	Piece* temp = board.board[row2][col2];
+
+	// Handle en-passant simulation: if destination is empty, move is diagonal and there is an adjacent pawn on source row
+	bool simulatedEnPassant = false;
+	Piece* simulatedCapturedPawn = nullptr;
+	int capturedRow = -1, capturedCol = -1;
+
+	if (temp == nullptr && col1 != col2) {
+		Piece* adjacent = board.board[row1][col2];
+		if (adjacent != nullptr && adjacent->getColor() != color &&
+			lastDoublePawnRow == row1 && lastDoublePawnCol == col2 &&
+			lastDoublePawnColor == adjacent->getColor()) {
+			// simulate removing the captured pawn
+			simulatedEnPassant = true;
+			simulatedCapturedPawn = adjacent;
+			capturedRow = row1;
+			capturedCol = col2;
+			board.board[capturedRow][capturedCol] = nullptr;
+		}
+	}
 
 	//Temporary Move
 	board.board[row2][col2] = board.board[row1][col1];
@@ -1051,13 +1137,15 @@ bool canEscape(Board& board, int row1, int col1, int row2, int col2, bool color)
 	int oldRedCol = redKingCol;
 
 	//Update King Positions
-	if (board.board[row2][col2]->getColor() == true && board.board[row2][col2]->getSymbol() == 'K') {
-		greenKingRow = row2;
-		greenKingCol = col2;
-	}
-	else if (board.board[row2][col2]->getColor() == false && board.board[row2][col2]->getSymbol() == 'k') {
-		redKingRow = row2;
-		redKingCol = col2;
+	if (board.board[row2][col2] != nullptr) {
+		if (board.board[row2][col2]->getColor() == true && board.board[row2][col2]->getSymbol() == 'K') {
+			greenKingRow = row2;
+			greenKingCol = col2;
+		}
+		else if (board.board[row2][col2]->getColor() == false && board.board[row2][col2]->getSymbol() == 'k') {
+			redKingRow = row2;
+			redKingCol = col2;
+		}
 	}
 
 	//Check After Move
@@ -1066,6 +1154,11 @@ bool canEscape(Board& board, int row1, int col1, int row2, int col2, bool color)
 	//Undo Move
 	board.board[row1][col1] = board.board[row2][col2];
 	board.board[row2][col2] = temp;
+
+	// Restore any simulated en-passant captured pawn
+	if (simulatedEnPassant && simulatedCapturedPawn != nullptr) {
+		board.board[capturedRow][capturedCol] = simulatedCapturedPawn;
+	}
 
 	//Restore King Positions
 	greenKingCol = oldGreenCol;
@@ -1216,49 +1309,93 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 
 				if (canEscape(board, row1, col1, row2, col2, color)) {
 
-					board.board[row1][col1]->isMoved = false;
-				
-					//Castling.........Rook Movement
-					if (row2 == 0 && col2 == 6) {
-						//Move Rook
+					// Identify moving piece and destination BEFORE mutating the board
+					Piece* moving = board.board[row1][col1];
+					Piece* destBefore = board.board[row2][col2]; // may be nullptr
+
+					// Detect en-passant capture (diagonal to empty square, opponent pawn adjacent on source row that was last double-moved)
+					bool isEnPassant = false;
+					int epCapturedRow = -1, epCapturedCol = -1;
+					Piece* epCapturedPawn = nullptr;
+
+					if (moving != nullptr && (moving->getSymbol() == 'P' || moving->getSymbol() == 'p') &&
+						destBefore == nullptr && col1 != col2) {
+						Piece* adjacent = board.board[row1][col2];
+						if (adjacent != nullptr && adjacent->getColor() != color &&
+							lastDoublePawnRow == row1 && lastDoublePawnCol == col2 &&
+							lastDoublePawnColor == adjacent->getColor()) {
+							// perform en-passant capture after move
+							isEnPassant = true;
+							epCapturedRow = row1;
+							epCapturedCol = col2;
+							epCapturedPawn = adjacent;
+						}
+					}
+
+					//Castling.........Rook Movement (perform rook moves only when valid king move)
+					if (row2 == 0 && col2 == 6 && moving->getSymbol() == 'K' && moving->getColor()) {
 						board.board[0][5] = board.board[0][7];
 						board.board[0][7] = nullptr;
 						cout << "\nUpdating......\n";
 					}
-					else if (row2 == 0 && col2 == 2) {
-						//Move Rook
+					else if (row2 == 0 && col2 == 2 && moving->getSymbol() == 'K' && moving->getColor()) {
 						board.board[0][3] = board.board[0][0];
 						board.board[0][0] = nullptr;
 						cout << "\nUpdating......\n";
 					}
-					else if (row2 == 7 && col2 == 6) {
-						//Move Rook
+					else if (row2 == 7 && col2 == 6 && moving->getSymbol() == 'k' && !moving->getColor()) {
 						board.board[7][5] = board.board[7][7];
 						board.board[7][7] = nullptr;
 						cout << "\nUpdating......\n";
 					}
-					else if (row2 == 7 && col2 == 2) {
-						//Move Rook
+					else if (row2 == 7 && col2 == 2 && moving->getSymbol() == 'k' && !moving->getColor()) {
 						board.board[7][3] = board.board[7][0];
 						board.board[7][0] = nullptr;
 						cout << "\nUpdating......\n";
 					}
 
-					//Moving/Capturing piece........
-					board.board[row2][col2] = board.board[row1][col1];
+					//Perform the move
+					board.board[row2][col2] = moving;
 					board.board[row1][col1] = nullptr;
+
+					// If en-passant, remove captured pawn now (it was on source row at col2)
+					if (isEnPassant && epCapturedPawn != nullptr) {
+						delete epCapturedPawn;
+						board.board[epCapturedRow][epCapturedCol] = nullptr;
+					}
+
 					//Playing Sound.......
 					PlaySound(TEXT("moveSound"), NULL, SND_FILENAME | SND_ASYNC);
 
+					// mark moved flag if your logic expects it (original code toggles isMoved differently)
+					if (board.board[row2][col2] != nullptr) {
+						board.board[row2][col2]->isMoved = false;
+					}
+
+					// If this move was a pawn double-step, set en-passant availability for opponent; otherwise clear it
+					if (moving != nullptr && (moving->getSymbol() == 'P' || moving->getSymbol() == 'p') && abs(row2 - row1) == 2) {
+						lastDoublePawnRow = row2;
+						lastDoublePawnCol = col2;
+						lastDoublePawnColor = moving->getColor();
+					}
+					else {
+						// Clear en-passant availability since one full turn has passed (or it was captured)
+						lastDoublePawnRow = -1;
+						lastDoublePawnCol = -1;
+						lastDoublePawnColor = false;
+					}
+
 					//Updating King Positions if Needed
 					Piece* temp = board.board[row2][col2];
-					if (temp->getColor() == true && temp->getSymbol() == 'K') {
-						greenKingCol = col2;
-						greenKingRow = row2;
-					}
-					if (temp->getColor() == false && temp->getSymbol() == 'k') {
-						redKingCol = col2;
-						redKingRow = row2;
+					if (temp != nullptr) {
+						if (temp->getColor() == true && temp->getSymbol() == 'K') {
+							greenKingCol = col2;
+							greenKingRow = row2;
+						}
+						if (temp->getColor() == false && temp->getSymbol() == 'k') {
+							redKingCol = col2;
+							redKingRow = row2;
+						}
 					}
 
 					//Print Board
@@ -1271,7 +1408,7 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 						//////Check Statement is Printed in Check Function//////
 					}
 					if (checker) {
-						if (temp->getSymbol() == 'P') {
+						if (temp != nullptr && temp->getSymbol() == 'P') {
 							if (row2 == 7) {
 								cout << "===Pawn Promotion===\n";
 								int choice;
@@ -1305,7 +1442,7 @@ bool Player::makeMove(string from, string to, Board& board, bool color) {
 								} while (true);
 							}
 						}
-						else if (temp->getSymbol() == 'p') {
+						else if (temp != nullptr && temp->getSymbol() == 'p') {
 							if (row2 == 0) {
 								cout << "===Pawn Promotion===\n";
 								int choice;
